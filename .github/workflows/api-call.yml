@@ -28,14 +28,13 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
             -d @chatgpt_pmt2.json)
+
           echo "response_full: $RESPONSE_GPT"
           
           export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
-          echo "response_answer: $RESPONSE_ANSWER"
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
 
 
       - name: Show speaking script
         run: |
           echo "output: ${{ steps.chatgpt.outputs.response }}"
-          echo "output.body ${{ steps.chatgpt.outputs.body.choices[0].message.content }}"
