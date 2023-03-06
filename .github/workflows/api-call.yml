@@ -24,9 +24,10 @@ jobs:
           sudo apt-get update
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod a+x /usr/local/bin/yq
-          
+          cat ./prompt.yaml
+
       - name: Parse prompt from YAML file
-        run: export PROMPT=$(yq e '.prompt_chatgpt' prompt.yaml)
+        run: export PROMPT=$(yq e '.prompt_chatgpt' ./prompt.yaml)
         env:
           PROMPT: ${{ env.PROMPT }}
       - name: Show prompt

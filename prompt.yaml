@@ -1,6 +1,3 @@
-- name: prompt_chatgpt
-  prompt: "Can you generate a speaking script to introduce AI Engineering"
-- name: prompt_dall_e
-  prompt: "Generate a younge white woman, age around 30, looks like a teacher talking to the students"
-- name: prompt_synthesia
-  prompt: "prompt to generate a video"
+prompt_chatgpt: "Can you generate a speaking script to introduce AI Engineering"
+prompt_dall_e: "Generate a younge white woman, age around 30, looks like a teacher talking to the students"
+prompt_synthesia: "prompt to generate a video"
