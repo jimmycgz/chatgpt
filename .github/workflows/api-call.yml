@@ -26,7 +26,7 @@ jobs:
         env:
           PROMPT: ${{ env.PROMPT }}
       - name: Show prompt
-        run: echo "The prompt is: $PROMPT"
+        run: echo "The prompt is $PROMPT"
       - name: Call chatgpt API
         uses: actions/http-client@v1
         id: chatgpt
