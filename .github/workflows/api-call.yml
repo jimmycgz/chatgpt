@@ -72,6 +72,10 @@ jobs:
           service_account: 'gcs-read-write@sada-jmy-demo.iam.gserviceaccount.com'
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
+      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
       # Upload file to gcs storage 
       - name : Upload file 
         run: |
@@ -84,7 +88,6 @@ jobs:
           gsutil cat gs://chatgpt-output/chatgpt-speak-script.txt
 
           
-
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
       # # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
