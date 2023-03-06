@@ -30,7 +30,7 @@ jobs:
             -d @chatgpt_pmt2.json)
           echo "response_full: $RESPONSE_GPT"
           
-          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')"
+          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
           echo "response_answer: $RESPONSE_ANSWER"
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
 
