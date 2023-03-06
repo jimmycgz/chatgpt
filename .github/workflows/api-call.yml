@@ -21,9 +21,8 @@ jobs:
 
       - name: Parse PROMPT_CHATGPT from TXT file
         run: |
-          cat ./prompt_chatgpt.txt
           export PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)
-          echo "PROMPT_CHATGPT: $PROMPT_CHATGPT"
+          echo "\n PROMPT_CHATGPT: $PROMPT_CHATGPT"
       - name: Show prompt
         run: echo "The prompt is $PROMPT_CHATGPT"
 
