@@ -50,6 +50,7 @@ jobs:
         run: |
           echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"
           echo "content: ${{ steps.chatgpt.outputs.choices[0].message.content }}"
+          echo "content: ${{ steps.chatgpt.outputs }}" | jq '.choices[0].message.content'
 
       - name: Print ChatGPT response
         uses: edwardgeorge/jq-action@main
