@@ -28,7 +28,7 @@ jobs:
       - name: Show prompt
         run: echo "The prompt is $PROMPT"
       - name: Call chatgpt API
-        uses: actions/http-client@v1
+        uses: actions/http-client@v1.0.0
         id: chatgpt
         with:
           url: https://api.chatgpt.com
