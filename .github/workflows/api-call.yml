@@ -27,16 +27,16 @@ jobs:
           PROMPT: ${{ env.PROMPT }}
       - name: Show prompt
         run: echo "The prompt is $PROMPT"
+
       - name: Call chatgpt API
-        uses: actions/http-client@v1.0.0
+        uses: fjogeleit/http-request-action@v1
         id: chatgpt
         with:
           url: https://api.chatgpt.com
           method: POST
-          headers: '{"Content-Type": "application/json", "Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
-          body: '{"prompt": "$PROMPT"}'
-        env:
-          PROMPT: ${{ env.PROMPT }}
+          contentType: 'application/json'
+          headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
+          data: '{"prompt": "$PROMPT"}'
       - name: Show speaking script
         run: echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"          
       # - name: Install chatgpt
