@@ -28,16 +28,11 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
             -d @chatgpt_pmt2.json) | jq '.choices[0].message.content'
-          echo "::set-output name=response::$RESPONSE_GPT"
+          echo "response:$RESPONSE_GPT"
+          echo "response=$RESPONSE_GPT" >> $GITHUB_OUTPUT
+
 
       - name: Show speaking script
         run: |
-          echo "output.body ${{ steps.chatgpt.outputs.body }}"
           echo "output: ${{ steps.chatgpt.outputs.response }}"
-
-
-      - name: Print ChatGPT response
-        uses: edwardgeorge/jq-action@main
-        with:
-          input: "${{ steps.chatgpt.outputs }}"
-          script: '.choices[0].message.content'
+          echo "output.body ${{ steps.chatgpt.outputs.body }}"
