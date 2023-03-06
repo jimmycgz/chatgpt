@@ -83,7 +83,7 @@ jobs:
       - id: 'gcloud'
         name: 'gcloud'
         run: |-
-          gsutil cat gs://chatgpt-output/"${{ SPEAKING_SCRIPT_FILE }}"
+          gsutil cat gs://chatgpt-output/"$SPEAKING_SCRIPT_FILE"
 
           
 
