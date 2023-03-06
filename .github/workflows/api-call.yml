@@ -23,7 +23,7 @@ env:
 jobs:
   chatgpt:
     runs-on: ubuntu-latest
-    
+
     # Add "id-token" with the intended permissions.
     permissions:
       contents: 'read'
@@ -41,14 +41,15 @@ jobs:
       - name: Call chatgpt API
         id: chatgpt
         run: |
-          RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
-            --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            --header 'Content-Type: application/json' \
-            -d @$PROMPT_GPT_JSON)
+          # RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
+          #   --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          #   --header 'Content-Type: application/json' \
+          #   -d @$PROMPT_GPT_JSON)
 
-          echo "response_full: $RESPONSE_GPT"
+          # echo "response_full: $RESPONSE_GPT"
           
-          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
+          # export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
+          export RESPONSE_ANSWER='This is a text file'
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
@@ -64,7 +65,7 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           token_format: 'access_token' # <--
-          workload_identity_provider: 'projects/427123092057/locations/global/workloadIdentityPools/github-pool'
+          workload_identity_provider: 'projects/427123092057/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'gcs-read-write@sada-jmy-demo.iam.gserviceaccount.com'
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
