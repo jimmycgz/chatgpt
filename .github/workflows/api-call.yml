@@ -76,8 +76,8 @@ jobs:
       - name : Upload file 
         uses : google-github-actions/upload-cloud-storage@v1.0.0
         with :
-          path : "${{ SPEAKING_SCRIPT_FILE }}"
-          destination : "gs://chatgpt-output/${{ SPEAKING_SCRIPT_FILE }}"
+          path : "$SPEAKING_SCRIPT_FILE"
+          destination : "gs://chatgpt-output/$SPEAKING_SCRIPT_FILE"
               
       # Now you can run gcloud commands authenticated as the impersonated service account.
       - id: 'gcloud'
