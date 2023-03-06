@@ -23,9 +23,7 @@ jobs:
         run: |
           cat ./prompt_chatgpt.txt
           export PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)
-          echo "ENV:PROMPT_CHATGPT: $PROMPT_CHATGPT"
-        env:
-          PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}
+          echo "PROMPT_CHATGPT: $PROMPT_CHATGPT"
       - name: Show prompt
         run: echo "The prompt is $PROMPT_CHATGPT"
 
