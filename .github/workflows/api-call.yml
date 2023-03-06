@@ -44,13 +44,13 @@ jobs:
           curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
-            -d @chatgpt_pmt2.json
+            -d @chatgpt_pmt2.json | jq '.choices[0].message.content'
 
       - name: Show speaking script
         run: |
-          echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"
-          echo "content: ${{ steps.chatgpt.outputs.choices[0].message.content }}"
-          echo "content: ${{ steps.chatgpt.outputs }}" | jq '.choices[0].message.content'
+          echo "output.body ${{ steps.chatgpt.outputs.body }}"
+          echo "output: ${{ steps.chatgpt.outputs }}"
+
 
       - name: Print ChatGPT response
         uses: edwardgeorge/jq-action@main
