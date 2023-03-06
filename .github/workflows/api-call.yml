@@ -27,8 +27,9 @@ jobs:
           RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
-            -d @chatgpt_pmt2.json) | jq '.choices[0].message.content'
-          echo "response:$RESPONSE_GPT"
+            -d @chatgpt_pmt2.json)
+          echo "response_full: $RESPONSE_GPT"
+          echo "response_answer: $(echo $RESPONSE_GPT | jq '.choices[0].message.content')"
           echo "response=$RESPONSE_GPT" >> $GITHUB_OUTPUT
 
 
