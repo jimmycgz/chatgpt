@@ -74,12 +74,17 @@ jobs:
 
       # Upload file to gcs storage 
       - name : Upload file 
-        uses : google-github-actions/upload-cloud-storage@v1.0.0
-        with :
-          path : ./
-          destination : "chatgpt-output"
-          glob: $SPEAKING_SCRIPT_FILE
-        
+        run: |
+          gsutil cp $SPEAKING_SCRIPT_FILE gs://chatgpt-output
+              
+      # Now you can run gcloud commands authenticated as the impersonated service account.
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gsutil cat gs://chatgpt-output/chatgpt-speak-script.txt
+
+          
+
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
       # # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
