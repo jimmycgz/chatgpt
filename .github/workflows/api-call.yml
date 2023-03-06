@@ -20,7 +20,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Parse PROMPT_CHATGPT from TXT file
-        run: export PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)
+        run: |
+          cat ./prompt_chatgpt.txt
+          export PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)
+          echo "ENV:PROMPT_CHATGPT: $PROMPT_CHATGPT"
         env:
           PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}
       - name: Show prompt
