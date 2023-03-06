@@ -17,17 +17,19 @@ on:
 
 env:
   PROMPT_GPT_JSON: chatgpt_pmt2.json
+  SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
 jobs:
   chatgpt:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Show Prompt
         run: |
           cat $PROMPT_GPT_JSON | jq '.messages[0].content'
 
+      # Call ChatGPT API to generate a speaking script from a prompt
       - name: Call chatgpt API
         id: chatgpt
         run: |
@@ -40,8 +42,82 @@ jobs:
           
           export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
+          echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
       - name: Show speaking script
         run: |
           echo "Response as below"
           echo ${{ steps.chatgpt.outputs.response }}
+
+
+      # Configure Workload Identity Federation and generate an access token.
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          token_format: 'access_token' # <--
+          workload_identity_provider: 'projects/427123092057/locations/global/workloadIdentityPools/github-pool'
+          service_account: 'gcs-read-write@sada-jmy-demo.iam.gserviceaccount.com'
+          access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
+
+      # Example of using the output. The token is usually provided as a Bearer
+      # token.
+      - id: 'access-secret'
+        run: |-
+          curl https://secretmanager.googleapis.com/v1/projects/my-project/secrets/my-secret/versions/1:access \
+            --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
+
+      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      # Upload file to gcs storage 
+      - name : Upload file 
+        uses : google-github-actions/upload-cloud-storage@main 
+        with :
+          path : $SPEAKING_SCRIPT_FILE
+          destination : gs://chatgpt-output/$SPEAKING_SCRIPT_FILE
+              
+      # # Now you can run gcloud commands authenticated as the impersonated service account.
+      # - id: 'gcloud'
+      #   name: 'gcloud'
+      #   run: |-
+      #     gcloud secrets versions access "latest" --secret "my-secret"            
+
+
+      # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
+      # # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
+      # - name: Generate image
+      #   uses: actions/http-client@v1.0.9
+      #   id: image
+      #   with:
+      #     url: https://api.imageai.com/generate?prompt=A%20young%20woman%20with%20brown%20hair%20and%20blue%20eyes.
+      #     method: GET
+      
+      # # Call Video AI API to let the above person speak out that script from a prompt, the endpint is fake: api.videoai.com 
+      # - name: Generate video 
+      #   uses: actions/http-client@v1.0.9 
+      #   id: video 
+      #   with:
+      #     url: https://api.videoai.com/generate?image=${{steps.image.outputs.content}}&script=${{steps.script.outputs.content}}
+      #     method: GET
+      
+      # # Save the video file to gcs storage 
+      # - name : Save video 
+      #   uses : google-github-actions/upload-cloud-storage@main 
+      #   with :
+      #     path : ${{steps.video.outputs.content}}
+      #     destination : gs://my-bucket/fake-video.mp4
+      
+      # # Generate a temporary link with a temporary password that user can download by entering right password 
+      # - name : Generate link 
+      #   uses : google-github-actions/get-gcs-objects@main 
+      #   id : link 
+      #   with :
+      #     bucket : my-bucket 
+      #     prefix : fake-video.mp4 
+      #     expires_in : 3600s
+      
+      # # Print out the link and password for user convenience (optional)  
+      # - name : Print link and password  
+      #   run : echo "The link for downloading your video is ${{steps.link.outputs.signed_url}} and the password is 'secret'."    
