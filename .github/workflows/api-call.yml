@@ -20,7 +20,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install yq
-        run: sudo apt-get update && sudo apt-get -y install yq
+        run: |
+          sudo apt-get update
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod a+x /usr/local/bin/yq
+          
       - name: Parse prompt from YAML file
         run: export PROMPT=$(yq e '.prompt_chatgpt' prompt.yaml)
         env:
