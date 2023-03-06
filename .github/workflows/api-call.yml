@@ -57,6 +57,8 @@ jobs:
         run: |
           echo "Response as below"
           echo ${{ steps.chatgpt.outputs.response }}
+          echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
+          ls -al 
 
 
       # Configure Workload Identity Federation and generate an access token.
