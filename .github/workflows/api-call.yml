@@ -18,9 +18,17 @@ on:
 env:
   PROMPT_GPT_JSON: chatgpt_pmt2.json
   SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
+    # Add "id-token" with the intended permissions.
+
 jobs:
   chatgpt:
     runs-on: ubuntu-latest
+    
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+          
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -60,6 +68,12 @@ jobs:
           service_account: 'gcs-read-write@sada-jmy-demo.iam.gserviceaccount.com'
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
+      # Now you can run gcloud commands authenticated as the impersonated service account.
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud secrets versions access "latest" --secret "my-secret"  
+
       # Example of using the output. The token is usually provided as a Bearer
       # token.
       - id: 'access-secret'
@@ -78,11 +92,7 @@ jobs:
           path : $SPEAKING_SCRIPT_FILE
           destination : gs://chatgpt-output/$SPEAKING_SCRIPT_FILE
               
-      # # Now you can run gcloud commands authenticated as the impersonated service account.
-      # - id: 'gcloud'
-      #   name: 'gcloud'
-      #   run: |-
-      #     gcloud secrets versions access "latest" --secret "my-secret"            
+          
 
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
