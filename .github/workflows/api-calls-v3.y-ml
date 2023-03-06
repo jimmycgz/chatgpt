@@ -1,0 +1,47 @@
+name: Generate Video from Text and Image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  generate_video:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install requests library
+        run: |
+          pip install requests
+
+      - name: Call DALL-E API
+        run: |
+          api_key='YOUR_DALLE_API_KEY'
+          response=$(curl -s -H "Authorization: Bearer $api_key" -H 'Content-Type: application/json' -d '{"prompt": "a red apple"}' 'https://api.openai.com/v1/images/generations')
+          url=$(echo $response | jq -r '.data[].url')
+          echo "Image URL: $url"
+
+      - name: Call ChatGPT API
+        run: |
+          api_key='YOUR_CHATGPT_API_KEY'
+          prompt='What is the meaning of life?'
+          response=$(curl -s -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $api_key" -d '{"prompt": "'"$prompt"'"}' 'https://api.openai.com/v1/engines/davinci-codex/completions')
+          message=$(echo $response | jq -r '.choices[].text')
+          echo "Response from ChatGPT: $message"
+
+      - name: Call Synthesia API
+        run: |
+          api_key='YOUR_SYNTHESIA_API_KEY'
+          input_text='Hello, this is a test video'
+          input_image='@/path/to/image.jpg'
+          response=$(curl -s -H "Authorization: $api_key" -F 'script_text='"$input_text"'' -F 'model_id=YOUR_MODEL_ID' -F 'image_file='"$input_image"'' 'https://api.synthesia.io/v2/videos')
+          video_id=$(echo $response | jq -r '.id')
+          echo "Video ID: $video_id"
+
+        

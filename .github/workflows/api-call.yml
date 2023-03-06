@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with GitHub Actions
+
+name: Fake Video Generator
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  chatgpt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Parse prompt YAML file
+        id: prompt
+        uses: yaml-parser@v0.1.2
+        with:
+          file: ./prompt.yaml # add path for the input file on root level of the repo
+          key: prompt-chatgpt
+      - name: Show prompt content # add step to show the content of the prompt
+        run: |
+          echo "The prompt is: ${{ steps.prompt.outputs.value }}"
+
+      # - name: Install chatgpt
+      #   run: npm install chatgpt
+
+      # npx is a tool that allows you to run npm packages without installing them globally. 
+      - name: Run chatgpt
+        id: query
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npx chatgpt ${{ steps.prompt.outputs.content }}
+
+
+      # - name: Query ChatGPT API
+      #   id: query
+      #   env:
+      #     OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+      #   run: |
+      #     response=$(gh api https://api.openai.com/v1/engines/davinci/completions -H "Authorization: Bearer $OPENAI_TOKEN" -F "prompt=${{ steps.prompt.outputs.content }}" -F "max_tokens=200" -F "temperature=0.9" -F "stop=ull" --jq .choices[0].text)
+      #     echo "::set-output name=response::$response"
+      - name: Print ChatGPT response
+        run: |
+          echo "ChatGPT says: ${{ steps.query.outputs.response }}"

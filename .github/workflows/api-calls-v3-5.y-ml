@@ -1,0 +1,70 @@
+# This is a basic workflow to help you get started with GitHub Actions
+
+name: Fake Video Generator
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This job generates a video that a fake person speaks
+  generate-video:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Call ChatGPT API to generate a speaking script from a prompt
+      - name: Generate script
+        uses: actions/http-client@v1.0.9
+        id: script
+        with:
+          url: https://api.chatgpt.com/generate?prompt=Hello%20world!
+          method: GET
+      
+      # Call Image AI API to generate a picture of a person from a prompt
+      - name: Generate image
+        uses: actions/http-client@v1.0.9
+        id: image
+        with:
+          url: https://api.imageai.com/generate?prompt=A%20young%20woman%20with%20brown%20hair%20and%20blue%20eyes.
+          method: GET
+      
+      # Call Video AI API to let the above person speak out that script from a prompt 
+      - name: Generate video 
+        uses: actions/http-client@v1.0.9 
+        id: video 
+        with:
+          url: https://api.videoai.com/generate?image=${{steps.image.outputs.content}}&script=${{steps.script.outputs.content}}
+          method: GET
+      
+      # Save the video file to gcs storage 
+      - name : Save video 
+        uses : google-github-actions/upload-cloud-storage@main 
+        with :
+          path : ${{steps.video.outputs.content}}
+          destination : gs://my-bucket/fake-video.mp4
+      
+      # Generate a temporary link with a temporary password that user can download by entering right password 
+      - name : Generate link 
+        uses : google-github-actions/get-gcs-objects@main 
+        id : link 
+        with :
+          bucket : my-bucket 
+          prefix : fake-video.mp4 
+          expires_in : 3600s
+      
+      # Print out the link and password for user convenience (optional)  
+      - name : Print link and password  
+        run : echo "The link for downloading your video is ${{steps.link.outputs.signed_url}} and the password is 'secret'."
