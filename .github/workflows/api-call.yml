@@ -19,16 +19,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Parse prompt YAML file
-        id: prompt
-        uses: yaml-parser@v0.1.2
+      - name: Install yq
+        run: sudo apt-get install yq
+      - name: Parse prompt from YAML file
+        run: export PROMPT=$(yq e '.prompt_chatgpt' prompt.yaml)
+        env:
+          PROMPT: ${{ env.PROMPT }}
+      - name: Show prompt
+        run: echo "The prompt is: $PROMPT"
+      - name: Call chatgpt API
+        uses: actions/http-client@v1
+        id: chatgpt
         with:
-          file: ./prompt.yaml # add path for the input file on root level of the repo
-          key: prompt-chatgpt
-      - name: Show prompt content # add step to show the content of the prompt
-        run: |
-          echo "The prompt is: ${{ steps.prompt.outputs.value }}"
-
+          url: https://api.chatgpt.com
+          method: POST
+          headers: '{"Content-Type": "application/json", "Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
+          body: '{"prompt": "$PROMPT"}'
+        env:
+          PROMPT: ${{ env.PROMPT }}
+      - name: Show speaking script
+        run: echo "The speaking script is: ${{ steps.chatgpt.outputs.body }}"          
       # - name: Install chatgpt
       #   run: npm install chatgpt
 
@@ -37,7 +47,7 @@ jobs:
         id: query
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: npx chatgpt ${{ steps.prompt.outputs.content }}
+        run: npx chatgpt $PROMPT
 
 
       # - name: Query ChatGPT API
