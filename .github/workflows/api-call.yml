@@ -51,13 +51,14 @@ jobs:
           # export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
           export RESPONSE_ANSWER='This is a text file'
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
-          echo $RESPONSE_ANSWER > /$SPEAKING_SCRIPT_FILE
+          echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
       - name: Show speaking script
         run: |
           echo "Response as below"
           echo ${{ steps.chatgpt.outputs.response }}
-          echo "FILE_NAME: /$SPEAKING_SCRIPT_FILE"
+          echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
+          echo "Current Folder: $(pwd)"
           ls -al 
 
 
