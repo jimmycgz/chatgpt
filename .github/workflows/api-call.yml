@@ -19,12 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Parse PROMPT_CHATGPT from TXT file
-        run: |
-          echo "PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)" >> $GITHUB_ENV
-          echo "\n PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}"
-      - name: Show prompt
-        run: echo "The prompt is ${{ env.PROMPT_CHATGPT }}"
+      # - name: Parse PROMPT_CHATGPT from TXT file
+      #   run: |
+      #     echo "PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)" >> $GITHUB_ENV
+      #     echo "\n PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}"
+      # - name: Show prompt
+      #   run: echo "The prompt is ${{ env.PROMPT_CHATGPT }}"
 
       # - name: Call chatgpt API
       #   uses: fjogeleit/http-request-action@v1
@@ -46,24 +46,11 @@ jobs:
 
       - name: Show speaking script
         run: |
-          echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"
+          echo "The speaking script is ${{ steps.chatgpt.outputs }}"
           echo "content: ${{ steps.chatgpt.outputs.choices[0].message.content }}"
 
-      # npx is a tool that allows you to run npm packages without installing them globally. 
-      - name: Run chatgpt
-        id: query
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: npx chatgpt ${{ env.PROMPT_CHATGPT }}
-
-
-      # - name: Query ChatGPT API
-      #   id: query
-      #   env:
-      #     OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
-      #   run: |
-      #     response=$(gh api https://api.openai.com/v1/engines/davinci/completions -H "Authorization: Bearer $OPENAI_TOKEN" -F "prompt=${{ steps.prompt.outputs.content }}" -F "max_tokens=200" -F "temperature=0.9" -F "stop=ull" --jq .choices[0].text)
-      #     echo "::set-output name=response::$response"
       - name: Print ChatGPT response
-        run: |
-          echo "ChatGPT says: ${{ steps.query.outputs.response }}"
+        uses: edwardgeorge/jq-action@main
+        with:
+          input: "${{ steps.chatgpt.outputs }}"
+          script: '.choices[0].message.content'
