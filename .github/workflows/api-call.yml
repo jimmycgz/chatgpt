@@ -41,15 +41,15 @@ jobs:
       - name: Call chatgpt API
         id: chatgpt
         run: |
-          # RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
-          #   --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-          #   --header 'Content-Type: application/json' \
-          #   -d @$PROMPT_GPT_JSON)
+          RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
+            --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+            --header 'Content-Type: application/json' \
+            -d @$PROMPT_GPT_JSON)
 
-          # echo "response_full: $RESPONSE_GPT"
+          echo "response_full: $RESPONSE_GPT"
           
-          # export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
-          export RESPONSE_ANSWER='This is a text file'
+          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
+          # export RESPONSE_ANSWER='This is a text file'
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
@@ -57,9 +57,9 @@ jobs:
         run: |
           echo "Response as below"
           echo ${{ steps.chatgpt.outputs.response }}
-          echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
-          echo "Current Folder: $(pwd)"
-          ls -al 
+          # echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
+          # echo "Current Folder: $(pwd)"
+          # ls -al 
 
 
       # Configure Workload Identity Federation and generate an access token.
@@ -87,7 +87,6 @@ jobs:
         run: |-
           gsutil cat gs://chatgpt-output/chatgpt-speak-script.txt
 
-          
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
       # # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
