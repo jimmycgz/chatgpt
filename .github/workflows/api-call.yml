@@ -26,19 +26,31 @@ jobs:
       - name: Show prompt
         run: echo "The prompt is ${{ env.PROMPT_CHATGPT }}"
 
+      # - name: Call chatgpt API
+      #   uses: fjogeleit/http-request-action@v1
+      #   id: chatgpt
+      #   with:
+      #     url: https://api.chatgpt.com
+      #     method: POST
+      #     contentType: 'application/json'
+      #     headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
+      #     data: '{"prompt": "${{ env.PROMPT_CHATGPT }}"}'
+
       - name: Call chatgpt API
-        uses: fjogeleit/http-request-action@v1
         id: chatgpt
-        with:
-          url: https://api.chatgpt.com
-          method: POST
-          contentType: 'application/json'
-          headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
-          data: '{"prompt": "${{ env.PROMPT_CHATGPT }}"}'
+        run: |
+          curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
+          --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          --header 'Content-Type: application/json' \
+          --data-raw "{
+           "model": "gpt-3.5-turbo",
+           "messages": [{"role": "user", "content": "${{ env.PROMPT_CHATGPT }}"}]
+          }"
+
       - name: Show speaking script
-        run: echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"          
-      # - name: Install chatgpt
-      #   run: npm install chatgpt
+        run: |
+          echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"
+          echo "content: ${{ steps.chatgpt.outputs.choices[0].message.content }}"
 
       # npx is a tool that allows you to run npm packages without installing them globally. 
       - name: Run chatgpt
