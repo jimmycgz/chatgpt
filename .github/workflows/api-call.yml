@@ -21,10 +21,10 @@ jobs:
 
       - name: Parse PROMPT_CHATGPT from TXT file
         run: |
-          export PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)
-          echo "\n PROMPT_CHATGPT: $PROMPT_CHATGPT"
+          echo "PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)" >> $GITHUB_ENV
+          echo "\n PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}"
       - name: Show prompt
-        run: echo "The prompt is $PROMPT_CHATGPT"
+        run: echo "The prompt is ${{ env.PROMPT_CHATGPT }}"
 
       - name: Call chatgpt API
         uses: fjogeleit/http-request-action@v1
@@ -34,7 +34,7 @@ jobs:
           method: POST
           contentType: 'application/json'
           headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
-          data: '{"prompt": "$PROMPT_CHATGPT"}'
+          data: '{"prompt": "${{ env.PROMPT_CHATGPT }}"}'
       - name: Show speaking script
         run: echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"          
       # - name: Install chatgpt
@@ -45,7 +45,7 @@ jobs:
         id: query
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: npx chatgpt $PROMPT
+        run: npx chatgpt ${{ env.PROMPT_CHATGPT }}
 
 
       # - name: Query ChatGPT API
