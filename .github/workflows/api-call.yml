@@ -35,6 +35,8 @@ jobs:
       #     contentType: 'application/json'
       #     headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
       #     data: '{"prompt": "${{ env.PROMPT_CHATGPT }}"}'
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Call chatgpt API
         id: chatgpt
@@ -46,7 +48,7 @@ jobs:
 
       - name: Show speaking script
         run: |
-          echo "The speaking script is ${{ steps.chatgpt.outputs }}"
+          echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"
           echo "content: ${{ steps.chatgpt.outputs.choices[0].message.content }}"
 
       - name: Print ChatGPT response
