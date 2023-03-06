@@ -38,7 +38,7 @@ jobs:
         env:
           PROMPT: ${{ env.PROMPT }}
       - name: Show speaking script
-        run: echo "The speaking script is: ${{ steps.chatgpt.outputs.body }}"          
+        run: echo "The speaking script is ${{ steps.chatgpt.outputs.body }}"          
       # - name: Install chatgpt
       #   run: npm install chatgpt
 
