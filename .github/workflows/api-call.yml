@@ -1,4 +1,6 @@
-# This is a basic workflow to help you get started with GitHub Actions
+# This is a GitHub action workflow that uses curl to call OpenAI API
+# and generate a speaking script from an input in a local text file
+# and show the script in the next step
 
 name: Fake Video Generator
 
@@ -19,37 +21,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # - name: Parse PROMPT_CHATGPT from TXT file
-      #   run: |
-      #     echo "PROMPT_CHATGPT=$(cat ./prompt_chatgpt.txt)" >> $GITHUB_ENV
-      #     echo "\n PROMPT_CHATGPT: ${{ env.PROMPT_CHATGPT }}"
-      # - name: Show prompt
-      #   run: echo "The prompt is ${{ env.PROMPT_CHATGPT }}"
-
-      # - name: Call chatgpt API
-      #   uses: fjogeleit/http-request-action@v1
-      #   id: chatgpt
-      #   with:
-      #     url: https://api.chatgpt.com
-      #     method: POST
-      #     contentType: 'application/json'
-      #     headers: '{"Authorization": "Bearer ${{ secrets.OPENAI_API_KEY }}"}'
-      #     data: '{"prompt": "${{ env.PROMPT_CHATGPT }}"}'
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Call chatgpt API
         id: chatgpt
         run: |
-          curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
+          RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
-            -d @chatgpt_pmt2.json | jq '.choices[0].message.content'
+            -d @chatgpt_pmt2.json) | jq '.choices[0].message.content'
+          echo "::set-output name=response::$RESPONSE_GPT"
 
       - name: Show speaking script
         run: |
           echo "output.body ${{ steps.chatgpt.outputs.body }}"
-          echo "output: ${{ steps.chatgpt.outputs }}"
+          echo "output: ${{ steps.chatgpt.outputs.response }}"
 
 
       - name: Print ChatGPT response
