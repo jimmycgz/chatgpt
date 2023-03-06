@@ -29,11 +29,13 @@ jobs:
             --header 'Content-Type: application/json' \
             -d @chatgpt_pmt2.json)
           echo "response_full: $RESPONSE_GPT"
-          echo "response_answer: $(echo $RESPONSE_GPT | jq '.choices[0].message.content')"
-          echo "response=$RESPONSE_GPT" >> $GITHUB_OUTPUT
+          
+          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')"
+          echo "response_answer: $RESPONSE_ANSWER"
+          echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
 
 
       - name: Show speaking script
         run: |
           echo "output: ${{ steps.chatgpt.outputs.response }}"
-          echo "output.body ${{ steps.chatgpt.outputs.body }}"
+          echo "output.body ${{ steps.chatgpt.outputs.body.choices[0].message.content }}"
