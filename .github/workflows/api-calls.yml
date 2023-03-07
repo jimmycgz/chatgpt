@@ -19,6 +19,8 @@ env:
   PROMPT_GPT_JSON: chatgpt_pmt2.json
   SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
   CHAT_GPT_OUTPUT_GCS: gs://chatgpt-output
+  PROMPT_VOICE_JSON: gcp-voice.json
+  SPEAKING_AUTO_RAW_FILE: gcp-voice.txt
 
 jobs:
   chatgpt:
@@ -72,6 +74,28 @@ jobs:
           service_account: "${{ secrets.GH_GCP_SERVICE_ACCOUNT }}"
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
+      # Generate audio Guide: https://cloud.google.com/text-to-speech/docs/create-audio-text-command-line
+      - name: Call GOOGLE text-to-speech API
+        id: text_to_speech
+        run: |
+          RESPONSE_GOOGLE=$(curl -X POST \
+          -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
+          -H "Content-Type: application/json; charset=utf-8" \
+          -d @gcp-voice.json \
+          "https://texttospeech.googleapis.com/v1/text:synthesize")
+
+          echo "response_full: $RESPONSE_GPT"
+          
+          export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq '.audioContent')
+          # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
+          echo "response=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
+          echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUTO_RAW_FILE
+
+      - name: Generate speaking audio
+        run: |
+          cat $SPEAKING_AUTO_RAW_FILE
+          base64 $SPEAKING_AUTO_RAW_FILE -d > $SPEAKING_AUTO_RAW_FILE.mp4
+
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
@@ -80,12 +104,15 @@ jobs:
       - name : Upload file 
         run: |
           gsutil cp $SPEAKING_SCRIPT_FILE $CHAT_GPT_OUTPUT_GCS
+          gsutil cp $SPEAKING_AUTO_RAW_FILE $CHAT_GPT_OUTPUT_GCS
+          gsutil cp $SPEAKING_AUTO_RAW_FILE.mp4 $CHAT_GPT_OUTPUT_GCS
               
       # Now you can run gcloud commands authenticated as the impersonated service account.
       - id: 'gcloud'
         name: 'Check File from the Storage'
         run: |-
           gsutil cat $CHAT_GPT_OUTPUT_GCS/$SPEAKING_SCRIPT_FILE
+          echo "audio file: $CHAT_GPT_OUTPUT_GCS/$SPEAKING_AUTO_RAW_FILE.mp4"
 
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
