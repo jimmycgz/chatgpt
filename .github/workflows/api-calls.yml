@@ -86,19 +86,17 @@ jobs:
 
           echo "response_full: $RESPONSE_GOOGLE"
           
-          export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq '.audioContent')
+          export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq -r '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
           echo "response=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
           echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUDIO_RAW_FILE
 
       - name: Generate speaking audio
         run: |
-          # cat $SPEAKING_AUDIO_RAW_FILE
-          ls -al $SPEAKING_AUDIO_RAW_FILE
-          echo "Current Folder: $(pwd)"
-          base64 -d /home/runner/work/chatgpt/chatgpt/gcp-voice.txt > tmp.mp4
-          base64 -d gcp-voice.txt >tmp2.txt.mp4
-          base64 -d $SPEAKING_AUDIO_RAW_FILE > tmp2.txt.mp4
+          # cat /home/runner/work/chatgpt/chatgpt/gcp-voice.txt
+          # ls -al $SPEAKING_AUDIO_RAW_FILE
+          # echo "Current Folder: $(pwd)"
+          base64 -d $SPEAKING_AUDIO_RAW_FILE > $SPEAKING_AUDIO_RAW_FILE.mp4
 
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
