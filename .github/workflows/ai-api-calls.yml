@@ -23,6 +23,7 @@ env:
   SPEAKING_AUDIO_RAW_FILE: gcp-voice-raw.txt
   SPEAKING_AUDIO_MP3: gcp-voice-output.mp3
   PROMPT_D_ID_VOICE_JSON: d-id-voice.json
+  PROMPT_D_ID_CLIP_JSON: d-id-clip.json
 
 jobs:
   chatgpt:
@@ -133,8 +134,18 @@ jobs:
       
       # # Call Studio.d-id API to generate a talk speaking the above script
       # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
-      
-      - name: Generate video 
+
+      - name: Update D-ID voice input json
+        run: |
+          # cat ${PROMPT_D_ID_VOICE_JSON} | jq '.input.text'
+          export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_D_ID_VOICE_JSON} > tmp-file.json
+          mv tmp-file.json ${PROMPT_D_ID_VOICE_JSON}
+
+          echo 'Done json update'
+          cat ${PROMPT_D_ID_VOICE_JSON} | jq .
+
+      - name: Generate D_ID voice talk 
         run: |
           curl --request POST \
             --url https://api.d-id.com/talks \
@@ -143,6 +154,15 @@ jobs:
             --header 'content-type: application/json' \
             --data @${PROMPT_D_ID_VOICE_JSON}
  
+      - name: Update D-ID video input json
+        run: |
+          # cat ${PROMPT_D_ID_CLIP_JSON} | jq '.input.text'
+          export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_D_ID_CLIP_JSON} > tmp-file.json
+          mv tmp-file.json ${PROMPT_D_ID_CLIP_JSON}
+
+          echo 'Done json update'
+          cat ${PROMPT_D_ID_CLIP_JSON} | jq .
 
       # # Call Video AI API to let the above person speak out that script from a prompt
       # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
