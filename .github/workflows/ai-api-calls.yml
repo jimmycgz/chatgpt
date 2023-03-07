@@ -56,19 +56,15 @@ jobs:
 
           export RESPONSE_ANSWER=$(cat resp-gpt.json | jq -r '.choices[0].message.content')
           # export RESPONSE_ANSWER='This is a text file'
-          # echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
-          echo "Resp answer"
-          echo $RESPONSE_ANSWER
-          echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
-      
-      - name: Check for Secret availability
-        id: secret-check
-        # perform secret check & put boolean result as an output
-        shell: bash
-        run: |
-          if [ "${{ RESPONSE_ANSWER }}" == "" ]; then
+
+          if [ "$RESPONSE_ANSWER" == "" ]; then
             echo "No Response from ChatGPT, please re-run the job!"
             exit 1
+          else
+            # echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
+            echo "Resp answer"
+            echo $RESPONSE_ANSWER
+            echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
           fi
 
       - name: Update gcp voice input json
