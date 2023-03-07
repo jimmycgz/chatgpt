@@ -65,9 +65,12 @@ jobs:
         
       - name: Update gcp voice input json
         run: |
-          cat ${PROMPT_VOICE_JSON} | jq '.input.text'
-          jq --arg newkey ${{ steps.chatgpt.outputs.response_script }} '.input.text |= $newkey' ${PROMPT_VOICE_JSON}
-          jq --arg newkey ${{ steps.chatgpt.outputs.response_script }} '.input.text |= $newkey' ${PROMPT_VOICE_JSON} > ${PROMPT_VOICE_JSON}
+          # cat ${PROMPT_VOICE_JSON} | jq '.input.text'
+          export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
+          jq --arg newkey ${SPEAKING_SCRIPT} '.input.text = $newkey' ${PROMPT_VOICE_JSON} > tmp-file.json
+          mv tmp-file.json ${PROMPT_VOICE_JSON}
+          echo 'Done json update'
+
           cat ${PROMPT_VOICE_JSON} | jq .
 
       # Configure Workload Identity Federation and generate an access token.
@@ -98,7 +101,7 @@ jobs:
 
       - name: Generate speaking audio
         run: |
-          # cat /home/runner/work/chatgpt/chatgpt/gcp-voice.txt
+          # cat $SPEAKING_AUDIO_RAW_FILE
           # ls -al $SPEAKING_AUDIO_RAW_FILE
           # echo "Current Folder: $(pwd)"
           base64 -d $SPEAKING_AUDIO_RAW_FILE > $SPEAKING_AUDIO_RAW_FILE.mp4
