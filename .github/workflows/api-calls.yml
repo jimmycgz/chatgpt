@@ -43,15 +43,15 @@ jobs:
       - name: Call chatgpt API
         id: chatgpt
         run: |
-          RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
-            --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
-            --header 'Content-Type: application/json' \
-            -d @$PROMPT_GPT_JSON)
+          # RESPONSE_GPT=$(curl --location --insecure --request POST 'https://api.openai.com/v1/chat/completions' \
+          #   --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
+          #   --header 'Content-Type: application/json' \
+          #   -d @$PROMPT_GPT_JSON)
 
-          echo "response_full: $RESPONSE_GPT"
+          # echo "response_full: $RESPONSE_GPT"
           
-          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
-          # export RESPONSE_ANSWER='This is a text file'
+          # export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
+          export RESPONSE_ANSWER='This is a text file'
           echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
@@ -94,7 +94,7 @@ jobs:
       - name: Generate speaking audio
         run: |
           # cat $SPEAKING_AUTO_RAW_FILE
-          cat $SPEAKING_AUTO_RAW_FILE | base64 -d > $SPEAKING_AUTO_RAW_FILE.mp4
+          base64 --decode $SPEAKING_AUTO_RAW_FILE > $SPEAKING_AUTO_RAW_FILE.mp4
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: 'Set up Cloud SDK'
