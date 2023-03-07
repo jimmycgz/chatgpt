@@ -52,17 +52,20 @@ jobs:
           
           # export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
           export RESPONSE_ANSWER='This is a text file'
-          echo "response=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
+          echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
 
       - name: Show speaking script
         run: |
           echo "Response as below"
-          echo ${{ steps.chatgpt.outputs.response }}
+          echo ${{ steps.chatgpt.outputs.response_script }}
           # echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
           # echo "Current Folder: $(pwd)"
           # ls -al 
-
+        
+      - name: Update gcp voice input json
+        run: |
+          jq --arg newkey "${{ steps.chatgpt.outputs.response_script }}" '.input.text |= $newkey' ${PROMPT_VOICE_JSON}  > ${PROMPT_VOICE_JSON}          
 
       # Configure Workload Identity Federation and generate an access token.
       - id: 'auth'
@@ -87,7 +90,7 @@ jobs:
           # echo "response_full: $RESPONSE_GOOGLE"
           export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq -r '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
-          echo "response=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
+          echo "response_voice=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
           echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUDIO_RAW_FILE
 
       - name: Generate speaking audio
