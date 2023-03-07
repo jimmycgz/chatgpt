@@ -99,8 +99,15 @@ jobs:
 
           export RESPONSE_GCP_AUDIO_RAW=$(cat resp-full-gcp-audio.json | jq -r '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
-          # echo "response_voice=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
-          echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUDIO_RAW_FILE
+
+
+          if [ "$RESPONSE_GCP_AUDIO_RAW" == "" ]; then
+            echo "No Response from Google Text-to-Speech, please re-run the job!"
+            exit 1
+          else
+            # echo "response_voice=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
+            echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUDIO_RAW_FILE
+          fi
 
       - name: Generate speaking audio
         run: |
@@ -152,7 +159,16 @@ jobs:
             --header 'accept: application/json' \
             --header "authorization: Bearer ${{ secrets.D_ID_API_KEY }}" \
             --header 'content-type: application/json' \
-            --data @${PROMPT_D_ID_VOICE_JSON}
+            --data @${PROMPT_D_ID_VOICE_JSON} > tmp-d-id-resp.json
+
+          D_ID_TALK_STATUS=$(cat tmp-d-id-resp.json | jq '.status')
+          if [[ "$D_ID_TALK_STATUS" != "created" ]]; then
+            echo "API status error from D_ID Talk Task: $D_ID_TALK_STATUS"
+            exit 1
+          else
+            D_ID_TALK_ID=$(cat tmp-d-id-resp.json | jq '.id')
+            echo "Talk created, task id: $D_ID_TALK_ID"
+          fi
 
       - name: List D_ID voice talk 
         run: |
