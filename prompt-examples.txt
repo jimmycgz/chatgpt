@@ -1,4 +1,0 @@
-# Convert below to json following the example of chatgpt_mpt2.json
-prompt_chatgpt: "Can you generate a speaking script to introduce AI Engineering"
-prompt_dall_e: "Generate a younge white woman, age around 30, looks like a teacher talking to the students"
-prompt_synthesia: "prompt to generate a video"

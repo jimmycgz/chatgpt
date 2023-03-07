@@ -36,3 +36,6 @@ This is a GitHub Action workflow that test AIGC, the pipeline has tested below s
 ## More info and references:
 * Example of Prompts: [prompts.md](./prompts.md)
 * Generate audio Guide: https://cloud.google.com/text-to-speech/docs/create-audio-text-command-line
+
+## Example of the pipeline output
+[Screen Shot](./SCR-20230307-n6x.png)
