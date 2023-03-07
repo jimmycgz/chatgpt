@@ -139,7 +139,7 @@ jobs:
           curl --request POST \
             --url https://api.d-id.com/talks \
             --header 'accept: application/json' \
-            --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
+            --header "authorization: Bearer ${{ secrets.D_ID_API_KEY }}" \
             --header 'content-type: application/json' \
             --data @${PROMPT_D_ID_VOICE_JSON}
  
