@@ -2,6 +2,6 @@
   "model": "gpt-3.5-turbo", 
   "messages": [{
     "role": "user", 
-    "content": "Write a speaking script to introduce what's GCP?"
+    "content": "Write a speaking script to introduce how to call CHATGPT API?"
     }]
 }

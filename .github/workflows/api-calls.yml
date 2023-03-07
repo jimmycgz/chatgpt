@@ -68,8 +68,8 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           token_format: 'access_token' # <--
-          workload_identity_provider: 'projects/427123092057/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          service_account: 'gcs-read-write@sada-jmy-demo.iam.gserviceaccount.com'
+          workload_identity_provider: "${{ secrets.GH_GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+          service_account: "${{ secrets.GH_GCP_SERVICE_ACCOUNT }}"
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
