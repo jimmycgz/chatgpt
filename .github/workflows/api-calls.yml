@@ -22,6 +22,7 @@ env:
   PROMPT_VOICE_JSON: gcp-voice.json
   SPEAKING_AUDIO_RAW_FILE: gcp-voice-raw.txt
   SPEAKING_AUDIO_MP3: gcp-voice-output.mp3
+  PROMPT_D_ID_VOICE_JSON: d-id-voice.json
 
 jobs:
   chatgpt:
@@ -140,56 +141,19 @@ jobs:
             --header 'accept: application/json' \
             --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
             --header 'content-type: application/json' \
-            --data @- <<EOF
-   {
-        "script": {
-             "type": "text",
-             "provider": {
-                  "type": "microsoft",
-                  "voice_id": "Jenny"
-             },
-             "ssml": "false",
-             "input": "Ladies and gentlemen, Allow me to introduce to you one of the most beautiful and diverse nations in the world - Canada. Covering over 9.9 million square kilometers, Canada is the world's second-largest country, bordered by three oceans and spanning six different time zones. It's also home to breathtaking natural landscapes, including the Rocky Mountains, countless lakes, rivers, and forests, and the world's largest system of freshwater lakes. Canada is a multicultural country with a rich history and unique culture. It has two official languages - English and French - and its people proudly celebrate their heritage, traditions, and customs. Despite being a sparsely populated country, Canada has a strong and thriving economy, with a high standard of living and access to excellent healthcare, education, and social services for its citizens. Canada is also a peaceful and democratic nation, respected globally for its commitment to human rights and international cooperation. In conclusion, Canada is undoubtedly a remarkable country, offering a vast array of experiences and opportunities for people across the globe. So why not plan a visit or explore its culture and history today? Thank you."
-        },
-        "config": {
-             "fluent": "false",
-             "pad_audio": "0.0"
-        },
-        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Sara_f/image.png"
-   }
-   EOF
+            --data @${PROMPT_D_ID_VOICE_JSON}
+ 
 
       # # Call Video AI API to let the above person speak out that script from a prompt
       # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
-      - name: Generate video 
-          curl --request POST \
-            --url https://api.d-id.com/clips \
-            --header 'accept: application/json' \
-            --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
-            --header 'content-type: application/json' \
-            --data @- <<EOF
-  {
-      "driver_id": "a5PgMbeGQE",
-      "script": {
-            "type": "text",
-            "provider": {
-                "type": "microsoft",
-                "voice_id": "Jenny"
-            },
-            "ssml": "false",
-            "input": "Ladies and gentlemen, Allow me to introduce to you one of the most beautiful and diverse nations in the world - Canada. Covering over 9.9 million square kilometers, Canada is the world's second-largest country, bordered by three oceans and spanning six different time zones. It's also home to breathtaking natural landscapes, including the Rocky Mountains, countless lakes, rivers, and forests, and the world's largest system of freshwater lakes. Canada is a multicultural country with a rich history and unique culture. It has two official languages - English and French - and its people proudly celebrate their heritage, traditions, and customs. Despite being a sparsely populated country, Canada has a strong and thriving economy, with a high standard of living and access to excellent healthcare, education, and social services for its citizens. Canada is also a peaceful and democratic nation, respected globally for its commitment to human rights and international cooperation. In conclusion, Canada is undoubtedly a remarkable country, offering a vast array of experiences and opportunities for people across the globe. So why not plan a visit or explore its culture and history today? Thank you."
-      },
-      "config": {
-            "result_format": "mp4"
-      },
-      "presenter_config": {
-            "crop": {
-                "type": "rectangle"
-            }
-      },
-      "presenter_id": "amy-zjBKSuTooU"
-  }
-  EOF
+      # - name: Generate video 
+      #     curl --request POST \
+      #       --url https://api.d-id.com/clips \
+      #       --header 'accept: application/json' \
+      #       --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
+      #       --header 'content-type: application/json' \
+      #       --data @${PROMPT_D_ID_CLIP_JSON}
+
       
       # # Save the video file to gcs storage 
       # - name : Save video 

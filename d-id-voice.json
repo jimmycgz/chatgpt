@@ -1,0 +1,16 @@
+{
+  "script": {
+       "type": "text",
+       "provider": {
+            "type": "microsoft",
+            "voice_id": "Jenny"
+       },
+       "ssml": "false",
+       "input": "Ladies and gentlemen, Allow me to introduce to you one of the most beautiful and diverse nations in the world - Canada. Covering over 9.9 million square kilometers, Canada is the world's second-largest country, bordered by three oceans and spanning six different time zones. It's also home to breathtaking natural landscapes, including the Rocky Mountains, countless lakes, rivers, and forests, and the world's largest system of freshwater lakes. Canada is a multicultural country with a rich history and unique culture. It has two official languages - English and French - and its people proudly celebrate their heritage, traditions, and customs. Despite being a sparsely populated country, Canada has a strong and thriving economy, with a high standard of living and access to excellent healthcare, education, and social services for its citizens. Canada is also a peaceful and democratic nation, respected globally for its commitment to human rights and international cooperation. In conclusion, Canada is undoubtedly a remarkable country, offering a vast array of experiences and opportunities for people across the globe. So why not plan a visit or explore its culture and history today? Thank you."
+  },
+  "config": {
+       "fluent": "false",
+       "pad_audio": "0.0"
+  },
+  "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Sara_f/image.png"
+}
