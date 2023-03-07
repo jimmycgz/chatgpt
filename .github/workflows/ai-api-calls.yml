@@ -60,7 +60,17 @@ jobs:
           echo "Resp answer"
           echo $RESPONSE_ANSWER
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
-        
+      
+      - name: Check for Secret availability
+        id: secret-check
+        # perform secret check & put boolean result as an output
+        shell: bash
+        run: |
+          if [ "${{ RESPONSE_ANSWER }}" == "" ]; then
+            echo "No Response from ChatGPT, please re-run the job!"
+            exit 1
+          fi
+
       - name: Update gcp voice input json
         run: |
           # cat ${PROMPT_VOICE_JSON} | jq '.input.text'
