@@ -18,7 +18,7 @@ on:
 env:
   PROMPT_GPT_JSON: chatgpt_pmt2.json
   SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
-    # Add "id-token" with the intended permissions.
+  CHAT_GPT_OUTPUT_GCS: gs://chatgpt-output
 
 jobs:
   chatgpt:
@@ -79,13 +79,13 @@ jobs:
       # Upload file to gcs storage 
       - name : Upload file 
         run: |
-          gsutil cp $SPEAKING_SCRIPT_FILE gs://chatgpt-output
+          gsutil cp $SPEAKING_SCRIPT_FILE $CHAT_GPT_OUTPUT_GCS
               
       # Now you can run gcloud commands authenticated as the impersonated service account.
       - id: 'gcloud'
         name: 'Check File from the Storage'
         run: |-
-          gsutil cat gs://chatgpt-output/chatgpt-speak-script.txt
+          gsutil cat $CHAT_GPT_OUTPUT_GCS/$SPEAKING_SCRIPT_FILE
 
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
