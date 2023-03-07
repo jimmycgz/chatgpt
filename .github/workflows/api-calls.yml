@@ -54,18 +54,10 @@ jobs:
           
           export RESPONSE_ANSWER=$(cat resp-gpt.json | jq -r '.choices[0].message.content')
           # export RESPONSE_ANSWER='This is a text file'
-          echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
+          # echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo "Resp answer"
           echo $RESPONSE_ANSWER
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
-
-      - name: Show speaking script
-        run: |
-          echo "Response as below"
-          echo ${{ steps.chatgpt.outputs.response_script }}
-          # echo "FILE_NAME: $SPEAKING_SCRIPT_FILE"
-          # echo "Current Folder: $(pwd)"
-          # ls -al 
         
       - name: Update gcp voice input json
         run: |
