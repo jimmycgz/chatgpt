@@ -1,8 +1,12 @@
-# This is a GitHub action workflow that uses curl to call OpenAI API
-# and generate a speaking script from an input in a local text file
-# and show the script in the next step
+# This is a GitHub Action workflow that test AIGC, the pipeline has tested below steps:
+# * Call OpenAI API to generate a speaking script per a prompt request from json input
+# * Configure Workload Identity Federation to let Github Actions access GCP via OAUTH temporary token
+# * Generate speaking audio via Google text-to-speech API
+# * Call Studio.d-id API to generate a talk (mp3) speaking the above script
+# * Get the url of the saved mp3 file
+# * Call Video AI API to let the above person speak out the above script
 
-name: Fake Video Generator
+name: AIGC Pipeline
 
 # Controls when the workflow will run
 on:
