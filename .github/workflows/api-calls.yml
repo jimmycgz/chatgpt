@@ -20,7 +20,7 @@ env:
   SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
   OUTPUT_GCS: gs://chatgpt-output
   PROMPT_VOICE_JSON: gcp-voice.json
-  SPEAKING_AUDIO_RAW_FILE: gcp-voice.txt
+  SPEAKING_AUDIO_RAW_FILE: gcp-voice-raw.txt
 
 jobs:
   chatgpt:
@@ -65,7 +65,7 @@ jobs:
         
       - name: Update gcp voice input json
         run: |
-          jq --arg newkey "${{ steps.chatgpt.outputs.response_script }}" '.input.text |= $newkey' ${PROMPT_VOICE_JSON}  > ${PROMPT_VOICE_JSON}          
+          jq --arg newkey ${{ steps.chatgpt.outputs.response_script }} '.input.text |= $newkey' ${PROMPT_VOICE_JSON}  > ${PROMPT_VOICE_JSON}          
 
       # Configure Workload Identity Federation and generate an access token.
       - id: 'auth'
