@@ -83,7 +83,7 @@ jobs:
               
       # Now you can run gcloud commands authenticated as the impersonated service account.
       - id: 'gcloud'
-        name: 'gcloud'
+        name: 'Check File from the Storage'
         run: |-
           gsutil cat gs://chatgpt-output/chatgpt-speak-script.txt
 
