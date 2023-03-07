@@ -175,7 +175,6 @@ jobs:
       #       --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
       #       --header 'content-type: application/json' \
       #       --data @${PROMPT_D_ID_CLIP_JSON}
-
      
       # Print out the link and password for user convenience
       # Need to verify the key path of '.clips[].clip_url'
