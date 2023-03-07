@@ -100,7 +100,7 @@ jobs:
           # cat $SPEAKING_AUDIO_RAW_FILE
           # ls -al $SPEAKING_AUDIO_RAW_FILE
           # echo "Current Folder: $(pwd)"
-          base64 -d $SPEAKING_AUDIO_RAW_FILE > $SPEAKING_AUDIO_RAW_FILE.mp4
+          base64 -d $SPEAKING_AUDIO_RAW_FILE > $SPEAKING_AUDIO_RAW_FILE.mp3
 
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
@@ -119,7 +119,7 @@ jobs:
         name: 'Check File from the Storage'
         run: |-
           gsutil cat $OUTPUT_GCS/$SPEAKING_SCRIPT_FILE
-          echo "audio file: $OUTPUT_GCS/$SPEAKING_AUDIO_RAW_FILE.mp4"
+          echo "audio file: $OUTPUT_GCS/$SPEAKING_AUDIO_RAW_FILE.mp3"
 
 
       # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
