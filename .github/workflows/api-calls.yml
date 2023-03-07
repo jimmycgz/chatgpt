@@ -81,11 +81,10 @@ jobs:
           RESPONSE_GOOGLE=$(curl -X POST \
           -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
           -H "Content-Type: application/json; charset=utf-8" \
-          -d @gcp-voice.json \
+          -d @${PROMPT_VOICE_JSON} \
           "https://texttospeech.googleapis.com/v1/text:synthesize")
 
-          echo "response_full: $RESPONSE_GOOGLE"
-          
+          # echo "response_full: $RESPONSE_GOOGLE"
           export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq -r '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
           echo "response=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT

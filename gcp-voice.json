@@ -1,6 +1,6 @@
 {
   "input":{
-    "text":"Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
+    "text":"This is a test from gcp voice api."
   },
   "voice":{
     "languageCode":"en-gb",
