@@ -50,7 +50,7 @@ jobs:
 
           echo "response_full: $RESPONSE_GPT"
           
-          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq '.choices[0].message.content')
+          export RESPONSE_ANSWER=$(echo $RESPONSE_GPT | jq -r '.choices[0].message.content')
           # export RESPONSE_ANSWER='This is a text file'
           echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
           echo $RESPONSE_ANSWER > $SPEAKING_SCRIPT_FILE
@@ -67,7 +67,7 @@ jobs:
         run: |
           # cat ${PROMPT_VOICE_JSON} | jq '.input.text'
           export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-          jq --arg newkey ${SPEAKING_SCRIPT} '.input.text = $newkey' ${PROMPT_VOICE_JSON} > tmp-file.json
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_VOICE_JSON} > tmp-file.json
           mv tmp-file.json ${PROMPT_VOICE_JSON}
           echo 'Done json update'
 
