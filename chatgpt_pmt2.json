@@ -2,6 +2,6 @@
   "model": "gpt-3.5-turbo", 
   "messages": [{
     "role": "user", 
-    "content": "Write a speaking script to introduce AI Engineering?"
+    "content": "Write a speaking script to introduce Canada?"
     }]
 }

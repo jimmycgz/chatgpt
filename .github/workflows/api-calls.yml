@@ -49,10 +49,9 @@ jobs:
             --header 'Content-Type: application/json' \
             -d @$PROMPT_GPT_JSON > resp-gpt.json
 
-          echo "response_full:" 
-          cat resp-gpt.json
+          # echo "response_full:" 
+          # cat resp-gpt.json
 
-          
           export RESPONSE_ANSWER=$(cat resp-gpt.json | jq -r '.choices[0].message.content')
           # export RESPONSE_ANSWER='This is a text file'
           # echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
@@ -66,8 +65,8 @@ jobs:
           export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
           jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_VOICE_JSON} > tmp-file.json
           mv tmp-file.json ${PROMPT_VOICE_JSON}
-          echo 'Done json update'
 
+          echo 'Done json update'
           cat ${PROMPT_VOICE_JSON} | jq .
 
       # Configure Workload Identity Federation and generate an access token.
@@ -84,16 +83,15 @@ jobs:
       - name: Call GOOGLE text-to-speech API
         id: text_to_speech
         run: |
-          RESPONSE_GOOGLE=$(curl -X POST \
+          curl -X POST \
           -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
           -H "Content-Type: application/json; charset=utf-8" \
           -d @${PROMPT_VOICE_JSON} \
-          "https://texttospeech.googleapis.com/v1/text:synthesize")
+          "https://texttospeech.googleapis.com/v1/text:synthesize" > resp-full-gcp-audio.json
 
-          # echo "response_full: $RESPONSE_GOOGLE"
-          export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq -r '.audioContent')
+          export RESPONSE_GCP_AUDIO_RAW=$(cat resp-full-gcp-audio.json | jq -r '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
-          echo "response_voice=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
+          # echo "response_voice=$RESPONSE_GCP_AUDIO_RAW" >> $GITHUB_OUTPUT
           echo $RESPONSE_GCP_AUDIO_RAW > $SPEAKING_AUDIO_RAW_FILE
 
       - name: Generate speaking audio
