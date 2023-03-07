@@ -84,7 +84,7 @@ jobs:
           -d @gcp-voice.json \
           "https://texttospeech.googleapis.com/v1/text:synthesize")
 
-          echo "response_full: $RESPONSE_GPT"
+          echo "response_full: $RESPONSE_GOOGLE"
           
           export RESPONSE_GCP_AUDIO_RAW=$(echo $RESPONSE_GOOGLE | jq '.audioContent')
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
@@ -95,7 +95,11 @@ jobs:
         run: |
           # cat $SPEAKING_AUDIO_RAW_FILE
           ls -al $SPEAKING_AUDIO_RAW_FILE
+          echo "Current Folder: $(pwd)"
+          base64 -d /home/runner/work/chatgpt/chatgpt/gcp-voice.txt > tmp.mp4
+          base64 -d gcp-voice.txt >tmp2.txt.mp4
           base64 -d $SPEAKING_AUDIO_RAW_FILE > tmp2.txt.mp4
+
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: 'Set up Cloud SDK'
