@@ -164,6 +164,7 @@ jobs:
           D_ID_TALK_STATUS=$(cat tmp-d-id-resp.json | jq '.status')
           if [[ "$D_ID_TALK_STATUS" != "created" ]]; then
             echo "API status error from D_ID Talk Task: $D_ID_TALK_STATUS"
+            cat tmp-d-id-resp.json
             exit 1
           else
             D_ID_TALK_ID=$(cat tmp-d-id-resp.json | jq '.id')
