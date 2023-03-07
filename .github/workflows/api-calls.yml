@@ -130,13 +130,66 @@ jobs:
       #     url: https://api.imageai.com/generate?prompt=A%20young%20woman%20with%20brown%20hair%20and%20blue%20eyes.
       #     method: GET
       
-      # # Call Video AI API to let the above person speak out that script from a prompt, the endpint is fake: api.videoai.com 
-      # - name: Generate video 
-      #   uses: actions/http-client@v1.0.9 
-      #   id: video 
-      #   with:
-      #     url: https://api.videoai.com/generate?image=${{steps.image.outputs.content}}&script=${{steps.script.outputs.content}}
-      #     method: GET
+      # # Call Studio.d-id API to generate a talk speaking the above script
+      # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
+      
+      - name: Generate video 
+        run: |
+          curl --request POST \
+            --url https://api.d-id.com/talks \
+            --header 'accept: application/json' \
+            --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
+            --header 'content-type: application/json' \
+            --data @- <<EOF
+   {
+        "script": {
+             "type": "text",
+             "provider": {
+                  "type": "microsoft",
+                  "voice_id": "Jenny"
+             },
+             "ssml": "false",
+             "input": "Ladies and gentlemen, Allow me to introduce to you one of the most beautiful and diverse nations in the world - Canada. Covering over 9.9 million square kilometers, Canada is the world's second-largest country, bordered by three oceans and spanning six different time zones. It's also home to breathtaking natural landscapes, including the Rocky Mountains, countless lakes, rivers, and forests, and the world's largest system of freshwater lakes. Canada is a multicultural country with a rich history and unique culture. It has two official languages - English and French - and its people proudly celebrate their heritage, traditions, and customs. Despite being a sparsely populated country, Canada has a strong and thriving economy, with a high standard of living and access to excellent healthcare, education, and social services for its citizens. Canada is also a peaceful and democratic nation, respected globally for its commitment to human rights and international cooperation. In conclusion, Canada is undoubtedly a remarkable country, offering a vast array of experiences and opportunities for people across the globe. So why not plan a visit or explore its culture and history today? Thank you."
+        },
+        "config": {
+             "fluent": "false",
+             "pad_audio": "0.0"
+        },
+        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Sara_f/image.png"
+   }
+   EOF
+
+      # # Call Video AI API to let the above person speak out that script from a prompt
+      # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
+      - name: Generate video 
+          curl --request POST \
+            --url https://api.d-id.com/clips \
+            --header 'accept: application/json' \
+            --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
+            --header 'content-type: application/json' \
+            --data @- <<EOF
+  {
+      "driver_id": "a5PgMbeGQE",
+      "script": {
+            "type": "text",
+            "provider": {
+                "type": "microsoft",
+                "voice_id": "Jenny"
+            },
+            "ssml": "false",
+            "input": "Ladies and gentlemen, Allow me to introduce to you one of the most beautiful and diverse nations in the world - Canada. Covering over 9.9 million square kilometers, Canada is the world's second-largest country, bordered by three oceans and spanning six different time zones. It's also home to breathtaking natural landscapes, including the Rocky Mountains, countless lakes, rivers, and forests, and the world's largest system of freshwater lakes. Canada is a multicultural country with a rich history and unique culture. It has two official languages - English and French - and its people proudly celebrate their heritage, traditions, and customs. Despite being a sparsely populated country, Canada has a strong and thriving economy, with a high standard of living and access to excellent healthcare, education, and social services for its citizens. Canada is also a peaceful and democratic nation, respected globally for its commitment to human rights and international cooperation. In conclusion, Canada is undoubtedly a remarkable country, offering a vast array of experiences and opportunities for people across the globe. So why not plan a visit or explore its culture and history today? Thank you."
+      },
+      "config": {
+            "result_format": "mp4"
+      },
+      "presenter_config": {
+            "crop": {
+                "type": "rectangle"
+            }
+      },
+      "presenter_id": "amy-zjBKSuTooU"
+  }
+  EOF
       
       # # Save the video file to gcs storage 
       # - name : Save video 
