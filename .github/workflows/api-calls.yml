@@ -65,7 +65,9 @@ jobs:
         
       - name: Update gcp voice input json
         run: |
-          jq --arg newkey ${{ steps.chatgpt.outputs.response_script }} '.input.text |= $newkey' ${PROMPT_VOICE_JSON}  > ${PROMPT_VOICE_JSON}          
+          cat ${PROMPT_VOICE_JSON} | jq '.input.text'
+          jq --arg newkey ${{ steps.chatgpt.outputs.response_script }} '.input.text |= $newkey' ${PROMPT_VOICE_JSON} > ${PROMPT_VOICE_JSON}
+          cat ${PROMPT_VOICE_JSON} | jq '.input.text'
 
       # Configure Workload Identity Federation and generate an access token.
       - id: 'auth'
