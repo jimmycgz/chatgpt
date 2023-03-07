@@ -94,7 +94,8 @@ jobs:
       - name: Generate speaking audio
         run: |
           # cat $SPEAKING_AUTO_RAW_FILE
-          base64 --decode $SPEAKING_AUTO_RAW_FILE > $SPEAKING_AUTO_RAW_FILE.mp4
+          ls -al $SPEAKING_AUTO_RAW_FILE
+          base64 -d $SPEAKING_AUTO_RAW_FILE > gcp-audio.mp4
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: 'Set up Cloud SDK'
