@@ -123,23 +123,17 @@ jobs:
           echo "audio file: $OUTPUT_GCS/$SPEAKING_AUDIO_MP3"
 
 
-      # # Call Image AI API to generate a picture of a person from a prompt, the endpint is fake: api.imageai.com
-      # # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
-      # - name: Generate image
-      #   uses: actions/http-client@v1.0.9
-      #   id: image
-      #   with:
-      #     url: https://api.imageai.com/generate?prompt=A%20young%20woman%20with%20brown%20hair%20and%20blue%20eyes.
-      #     method: GET
+      # Call Image AI API to generate a picture of a person from a prompt
+      # Unfortunately, the official statement from Midjourney still is that they currently have no plans for an API in the near future.
       
-      # # Call Studio.d-id API to generate a talk speaking the above script
+      # Call Studio.d-id API to generate a talk speaking the above script
       # I paid the Lite plan on https://studio.d-id.com which can generate audio and animation, but not allowed to generate video clips, which is on Premium plan
 
       - name: Update D-ID voice input json
         run: |
           # cat ${PROMPT_D_ID_VOICE_JSON} | jq '.input.text'
           export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_D_ID_VOICE_JSON} > tmp-file.json
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${PROMPT_D_ID_VOICE_JSON} > tmp-file.json
           mv tmp-file.json ${PROMPT_D_ID_VOICE_JSON}
 
           echo 'Done json update'
@@ -154,21 +148,19 @@ jobs:
             --header 'content-type: application/json' \
             --data @${PROMPT_D_ID_VOICE_JSON}
 
-        - name: List D_ID voice talk 
-          run: |
-            curl --request GET \
-            --url https://api.d-id.com/talks \
-            --header 'accept: application/json' \
-            --header "authorization: Bearer ${{ secrets.D_ID_API_KEY }}" > tmp-d-id-resp.json
-            cat tmp-d-id-resp.json | jq '.talks[].audio_url'
-
-          
+      - name: List D_ID voice talk 
+        run: |
+          curl --request GET \
+          --url https://api.d-id.com/talks \
+          --header 'accept: application/json' \
+          --header "authorization: Bearer ${{ secrets.D_ID_API_KEY }}" > tmp-d-id-resp.json
+          cat tmp-d-id-resp.json | jq '.talks[].audio_url'
 
       - name: Update D-ID video input json
         run: |
           # cat ${PROMPT_D_ID_CLIP_JSON} | jq '.input.text'
           export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_D_ID_CLIP_JSON} > tmp-file.json
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${PROMPT_D_ID_CLIP_JSON} > tmp-file.json
           mv tmp-file.json ${PROMPT_D_ID_CLIP_JSON}
 
           echo 'Done json update'
@@ -184,23 +176,13 @@ jobs:
       #       --header 'content-type: application/json' \
       #       --data @${PROMPT_D_ID_CLIP_JSON}
 
-      
-      # # Save the video file to gcs storage 
-      # - name : Save video 
-      #   uses : google-github-actions/upload-cloud-storage@main 
-      #   with :
-      #     path : ${{steps.video.outputs.content}}
-      #     destination : gs://my-bucket/fake-video.mp4
-      
-      # # Generate a temporary link with a temporary password that user can download by entering right password 
-      # - name : Generate link 
-      #   uses : google-github-actions/get-gcs-objects@main 
-      #   id : link 
-      #   with :
-      #     bucket : my-bucket 
-      #     prefix : fake-video.mp4 
-      #     expires_in : 3600s
-      
-      # # Print out the link and password for user convenience (optional)  
-      # - name : Print link and password  
-      #   run : echo "The link for downloading your video is ${{steps.link.outputs.signed_url}} and the password is 'secret'."    
+     
+      # Print out the link and password for user convenience
+      # Need to verify the key path of '.clips[].clip_url'
+      # - name : Print link of the video clips  
+      #   run : |
+      #     curl --request GET \
+      #       --url https://api.d-id.com/clips \
+      #       --header 'accept: application/json' \
+      #       --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" > tmp-d-id-resp.json
+      #       cat tmp-d-id-resp.json | jq '.clips[].clip_url'
