@@ -45,18 +45,6 @@ jobs:
       - name: Show Prompt
         run: |
           cat $PROMPT_GPT_JSON | jq '.messages[0].content'
-      # Call ChatGPT API to generate a speaking script from a prompt
-      - name: Call ChatGPT API
-        id: chatgpt
-        run: |
-        response=$(curl --location --request POST 'https://api.openai.com/v1/chat/completions' \
-        --header "Authorization: Bearer $OPENAI_API_KEY" \
-        --header 'Content-Type: application/json' \
-        --data "@$PROMPT_GPT_JSON" \
-        --fail --silent --show-error --max-time 30)
-
-      response_answer=$(echo "$response" | jq -r '.choices[0].text')
-      echo "$response_answer" > "$SPEAKING_SCRIPT_FILE"
 
       # Call ChatGPT API to generate a speaking script from a prompt
       - name: Call chatgpt API
