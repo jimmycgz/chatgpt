@@ -105,7 +105,7 @@ jobs:
 
           jq -r '.audioContent' resp-full-gcp-audio.json | base64 -d > $SPEAKING_AUDIO_MP3
 
-          if [ -s "$SPEAKING_AUDIO_MP3" ]; then
+          if (( $(stat -c%s "$SPEAKING_AUDIO_MP3") < 5 )); then
             echo "No audio from Google Text-to-Speech, please re-run the job!"
             exit 1
           fi
