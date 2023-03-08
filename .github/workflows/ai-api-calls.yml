@@ -54,7 +54,7 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
             -d "@$PROMPT_GPT_JSON" \
-            --fail --silent --show-error --max-time 30 > resp-gpt.json
+            --fail --silent --show-error --max-time 90 > resp-gpt.json
 
           export RESPONSE_ANSWER=$(jq -r '.choices[0].message.content' resp-gpt.json)
           # export RESPONSE_ANSWER='This is a text file'
@@ -98,7 +98,7 @@ jobs:
             -H "Content-Type: application/json; charset=utf-8" \
             -d @${PROMPT_VOICE_JSON} \
             "https://texttospeech.googleapis.com/v1/text:synthesize" \
-            --fail --silent --show-error --max-time 30 > resp-full-gcp-audio.json
+            --fail --silent --show-error --max-time 90 > resp-full-gcp-audio.json
 
           export RESPONSE_GCP_AUDIO_RAW=$(jq -r '.audioContent' resp-full-gcp-audio.json)
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
