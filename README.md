@@ -39,3 +39,12 @@ This is a GitHub Action workflow that test AIGC, the pipeline has tested below s
 
 ## Example of the pipeline output
 [Screen Shot](./SCR-20230307-n6x.png)
+
+## Troubleshooting
+
+* Got below error no matter what you run in Ubuntu, it's cause by showing too much content on stdout via either cat, echo or jq.
+**Solution**: to avoid output too much to the stdout, use file with jq directly. 
+```
+-bash: /usr/bin/cat: Argument list too long
+-bash: /usr/bin/jq: Argument list too long
+``` 

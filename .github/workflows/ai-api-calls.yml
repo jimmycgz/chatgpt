@@ -56,17 +56,11 @@ jobs:
             -d "@$PROMPT_GPT_JSON" \
             --fail --silent --show-error --max-time 90 > resp-gpt.json
 
-          export RESPONSE_ANSWER=$(jq -r '.choices[0].message.content' resp-gpt.json)
-          # export RESPONSE_ANSWER='This is a text file'
+          jq -r '.choices[0].message.content' resp-gpt.json > "$SPEAKING_SCRIPT_FILE"
 
-          if [ -z "$RESPONSE_ANSWER" ]; then
+          if (( $(stat -c%s "$SPEAKING_SCRIPT_FILE") < 2 )); then
             echo "No Response from ChatGPT, please re-run the job!"
             exit 1
-          else
-            # echo "response_script=$RESPONSE_ANSWER" >> $GITHUB_OUTPUT
-            echo "Resp answer"
-            echo $RESPONSE_ANSWER
-            echo "$RESPONSE_ANSWER" > "$SPEAKING_SCRIPT_FILE"
           fi
 
       - name: Update gcp voice input json
@@ -104,7 +98,8 @@ jobs:
           # export RESPONSE_GCP_AUDIO_RAW='This is a text file'
 
           jq -r '.audioContent' resp-full-gcp-audio.json | base64 -d > $SPEAKING_AUDIO_MP3
-
+          
+          # Check file size of the audio output
           if (( $(stat -c%s "$SPEAKING_AUDIO_MP3") < 5 )); then
             echo "No audio from Google Text-to-Speech, please re-run the job!"
             exit 1
