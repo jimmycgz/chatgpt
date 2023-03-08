@@ -107,7 +107,8 @@ jobs:
             echo "No Response from Google Text-to-Speech, please re-run the job!"
             exit 1
           else
-            echo "$RESPONSE_GCP_AUDIO_RAW" | base64 -d > "$SPEAKING_AUDIO_MP3"
+            jq -r '.audioContent' resp-full-gcp-audio.json > "$SPEAKING_AUDIO_RAW_FILE"
+            base64 -d < "$SPEAKING_AUDIO_RAW_FILE" > "$SPEAKING_AUDIO_MP3"
           fi
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
