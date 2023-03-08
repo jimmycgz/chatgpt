@@ -108,7 +108,7 @@ jobs:
             exit 1
           else
             echo "$RESPONSE_GCP_AUDIO_RAW" > "$SPEAKING_AUDIO_RAW_FILE"
-            base64 -d < "$SPEAKING_AUDIO_RAW_FILE" > "$SPEAKING_AUDIO_MP3"
+            echo "$RESPONSE_GCP_AUDIO_RAW" | base64 --decode > "$SPEAKING_AUDIO_MP3"
           fi
 
       # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
