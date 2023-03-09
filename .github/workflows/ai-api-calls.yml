@@ -84,6 +84,7 @@ jobs:
           access_token_lifetime: '300s' # optional, default: '3600s' (1 hour)
 
       # Generate audio Guide: https://cloud.google.com/text-to-speech/docs/create-audio-text-command-line
+      # For demo only, below can process around 1-2 minutes audio, refer to this guide to generate long audio from text https://cloud.google.com/text-to-speech/docs/create-audio-text-command-line-long-audio-synthesis
       - name: Call GOOGLE text-to-speech API
         id: text_to_speech
         run: |

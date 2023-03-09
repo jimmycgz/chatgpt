@@ -2,6 +2,6 @@
   "model": "gpt-3.5-turbo", 
   "messages": [{
     "role": "user", 
-    "content": "Write a short speaking script to introduce the Toronto?"
+    "content": "Write a short speaking script to introduce the Prompt Engineering?"
     }]
 }
