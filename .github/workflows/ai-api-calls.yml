@@ -66,13 +66,13 @@ jobs:
 
       - name: Update gcp voice input json
         run: |
-          # cat ${PROMPT_VOICE_JSON} | jq '.input.text'
+          # cat ${INPUT_PATH}/${PROMPT_VOICE_JSON} | jq '.input.text'
           export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${PROMPT_VOICE_JSON} > tmp-file.json
-          mv tmp-file.json ${PROMPT_VOICE_JSON}
+          jq --arg newkey "${SPEAKING_SCRIPT}" '.input.text = $newkey' ${INPUT_PATH}/${PROMPT_VOICE_JSON} > tmp-file.json
+          mv tmp-file.json ${INPUT_PATH}/${PROMPT_VOICE_JSON}
 
           echo 'Done json update'
-          cat ${PROMPT_VOICE_JSON} | jq .
+          cat ${INPUT_PATH}/${PROMPT_VOICE_JSON} | jq .
 
       # Configure Workload Identity Federation and generate an access token.
       - id: 'auth'
@@ -92,7 +92,7 @@ jobs:
           curl -X POST \
             -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
             -H "Content-Type: application/json; charset=utf-8" \
-            -d @${PROMPT_VOICE_JSON} \
+            -d @${INPUT_PATH}/${PROMPT_VOICE_JSON} \
             "https://texttospeech.googleapis.com/v1/text:synthesize" \
             --fail --silent --show-error --max-time 90 > resp-full-gcp-audio.json
 
@@ -134,13 +134,13 @@ jobs:
       # # Tested, uncomment when got new subscription
       # - name: Update D-ID voice input json
       #   run: |
-      #     # cat ${PROMPT_D_ID_VOICE_JSON} | jq '.input.text'
+      #     # cat ${INPUT_PATH}/${PROMPT_D_ID_VOICE_JSON} | jq '.input.text'
       #     export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-      #     jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${PROMPT_D_ID_VOICE_JSON} > tmp-file.json
-      #     mv tmp-file.json ${PROMPT_D_ID_VOICE_JSON}
+      #     jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${INPUT_PATH}/${PROMPT_D_ID_VOICE_JSON} > tmp-file.json
+      #     mv tmp-file.json ${INPUT_PATH}/${PROMPT_D_ID_VOICE_JSON}
 
       #     echo 'Done json update'
-      #     cat ${PROMPT_D_ID_VOICE_JSON} | jq .
+      #     cat ${INPUT_PATH}/${PROMPT_D_ID_VOICE_JSON} | jq .
 
       # # Tested, uncomment when got new subscription
       # - name: Generate D_ID voice talk 
@@ -150,7 +150,7 @@ jobs:
       #       --header 'accept: application/json' \
       #       --header "authorization: Bearer ${{ secrets.D_ID_API_KEY }}" \
       #       --header 'content-type: application/json' \
-      #       --data @${PROMPT_D_ID_VOICE_JSON} > tmp-d-id-resp.json
+      #       --data @${INPUT_PATH}/${PROMPT_D_ID_VOICE_JSON} > tmp-d-id-resp.json
 
       #     D_ID_TALK_STATUS=$(cat tmp-d-id-resp.json | jq '.status')
       #     if [[ "$D_ID_TALK_STATUS" != "created" ]]; then
@@ -174,13 +174,13 @@ jobs:
       # # Tested, uncomment when got new subscription
       # - name: Update D-ID video input json
       #   run: |
-      #     # cat ${PROMPT_D_ID_CLIP_JSON} | jq '.input.text'
+      #     # cat ${INPUT_PATH}/${PROMPT_D_ID_CLIP_JSON} | jq '.input.text'
       #     export SPEAKING_SCRIPT=$(cat $SPEAKING_SCRIPT_FILE)
-      #     jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${PROMPT_D_ID_CLIP_JSON} > tmp-file.json
-      #     mv tmp-file.json ${PROMPT_D_ID_CLIP_JSON}
+      #     jq --arg newkey "${SPEAKING_SCRIPT}" '.script.input = $newkey' ${INPUT_PATH}/${PROMPT_D_ID_CLIP_JSON} > tmp-file.json
+      #     mv tmp-file.json ${INPUT_PATH}/${PROMPT_D_ID_CLIP_JSON}
 
       #     echo 'Done json update'
-      #     cat ${PROMPT_D_ID_CLIP_JSON} | jq .
+      #     cat ${INPUT_PATH}/${PROMPT_D_ID_CLIP_JSON} | jq .
 
       # # Tested via API document console, uncomment when got new subscription
       # # Call Video AI API to let the above person speak out that script from a prompt
@@ -191,7 +191,7 @@ jobs:
       #       --header 'accept: application/json' \
       #       --header "authorization: Bearer ${{ secret.D_ID_API_KEY }}" \
       #       --header 'content-type: application/json' \
-      #       --data @${PROMPT_D_ID_CLIP_JSON}
+      #       --data @${INPUT_PATH}/${PROMPT_D_ID_CLIP_JSON}
      
       # Print out the link and password for user convenience
       # Need to verify the key path of '.clips[].clip_url'
