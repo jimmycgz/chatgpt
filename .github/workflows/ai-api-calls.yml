@@ -21,14 +21,14 @@ on:
 
 env:
   INPUT_PATH: aigc-pipeline
-  PROMPT_GPT_JSON: "${{ INPUT_PATH }}/chatgpt_pmt2.json"
+  PROMPT_GPT_JSON: chatgpt_pmt2.json
   SPEAKING_SCRIPT_FILE: chatgpt-speak-script.txt
   OUTPUT_GCS: gs://chatgpt-output
-  PROMPT_VOICE_JSON: "${{ INPUT_PATH }}/gcp-voice.json"
+  PROMPT_VOICE_JSON: gcp-voice.json
   SPEAKING_AUDIO_RAW_FILE: gcp-voice-raw.txt
   SPEAKING_AUDIO_MP3: gcp-voice-output.mp3
-  PROMPT_D_ID_VOICE_JSON: "${{ INPUT_PATH }}/d-id-voice.json"
-  PROMPT_D_ID_CLIP_JSON: "${{ INPUT_PATH }}/d-id-clip.json"
+  PROMPT_D_ID_VOICE_JSON: d-id-voice.json
+  PROMPT_D_ID_CLIP_JSON: d-id-clip.json
 
 jobs:
   chatgpt:
@@ -54,7 +54,7 @@ jobs:
           curl --location --request POST 'https://api.openai.com/v1/chat/completions' \
             --header "Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}" \
             --header 'Content-Type: application/json' \
-            -d "@$PROMPT_GPT_JSON" \
+            -d "@${INPUT_PATH}/$PROMPT_GPT_JSON" \
             --fail --silent --show-error --max-time 90 > resp-gpt.json
 
           jq -r '.choices[0].message.content' resp-gpt.json > "$SPEAKING_SCRIPT_FILE"
