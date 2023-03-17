@@ -77,3 +77,16 @@ This query will update the GCE_name column of table-a with the name of the close
 
 I hope this helps you with your migration project. Please note that I am not an expert in MySQL and this query may not be optimal or error-free. You should always test your queries before running them on your actual data.
 
+### Glcoud filter to delete specific resources
+What is the best way in bash to delete these firewall rules that have random strings within them? I need a way to do that in future project that will have different firewall names after k8s, in google cloud platform.
+
+
+A:
+
+You can use <code>gcloud compute firewall-rules list</code> to list all firewall rules and then use <code>gcloud compute firewall-rules delete</code> to delete them.
+---
+can you write the full command?
+<code>gcloud compute firewall-rules list --filter="name~'k8s-fw-.*'" --format="value(name)" | xargs -I {} gcloud compute firewall-rules delete {}
+</code>
+
+gcloud compute firewall-rules list --filter="name~'k8s-.*'" --format="value(name)" --project sada-jmy-demo | xargs -I {} gcloud compute firewall-rules delete {} 
