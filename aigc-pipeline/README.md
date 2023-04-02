@@ -42,9 +42,12 @@ This is a GitHub Action workflow to demo AIGC, the pipeline has tested below ste
 
 ## Troubleshooting
 
-* Got below error no matter what you run in Ubuntu, it's cause by showing too much content on stdout via either cat, echo or jq.
-**Solution**: to avoid output too much to the stdout, use file with jq directly. 
+* If you get below error on Ubuntu, it's caused by showing too much content on stdout via either cat, echo or jq.
 ```
 -bash: /usr/bin/cat: Argument list too long
 -bash: /usr/bin/jq: Argument list too long
 ``` 
+**Solution**: To avoid output too much to the stdout, use files for both input and output, parse by jq. Example as below:
+```
+jq -r '.audioContent' resp-full-gcp-audio.json | base64 -d > $SPEAKING_AUDIO_MP3_FILE
+```
