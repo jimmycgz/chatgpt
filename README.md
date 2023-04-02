@@ -1,10 +1,8 @@
-# ChatGPT RunBooks
+# ChatGPT DEMOs
 
-## AIGC CICD Pipeline
+## DEMO #1: AIGC CICD Pipeline
 
-Refer the details at [README.md](aigc-pipelie/README.md)
-
-## Feature List
+### Feature List
  
 This is a GitHub Action workflow that test AIGC, the pipeline has tested below steps:
 * Call OpenAI API to generate a speaking script per a prompt request from json input
@@ -14,4 +12,5 @@ This is a GitHub Action workflow that test AIGC, the pipeline has tested below s
 * Get the url of the saved mp3 file
 * Call Video AI API to let the above person speak out the above script
 
-## Feed large files to ChatGPT
+### How to Use
+Refer the details at [README.md](aigc-pipelie/README.md)
