@@ -38,7 +38,7 @@ This is a GitHub Action workflow to demo AIGC, the pipeline has tested below ste
 * Generate audio Guide: https://cloud.google.com/text-to-speech/docs/create-audio-text-command-line
 
 ## Example of the pipeline output
-[Screen Shot](./SCR-20230307-n6x.png)
+![Screen Shot](./pipeline-job-status.png)
 
 ## Troubleshooting
 
