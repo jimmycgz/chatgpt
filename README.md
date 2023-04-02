@@ -13,4 +13,4 @@ This is a GitHub Action workflow that test AIGC, the pipeline has tested below s
 * Call Video AI API to let the above person speak out the above script
 
 ### How to Use
-Refer the details at [README.md](aigc-pipelie/README.md)
+Refer the details at [aigc-pipelie/README.md](aigc-pipelie/README.md)
