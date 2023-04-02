@@ -2,7 +2,7 @@
 
 ## Feature List
  
-This is a GitHub Action workflow that test AIGC, the pipeline has tested below steps:
+This is a GitHub Action workflow to demo AIGC, the pipeline has tested below steps:
 * Call OpenAI API to generate a speaking script per a prompt request from json input
 * Configure Workload Identity Federation to let Github Actions access GCP via OAUTH temporary token
 * Generate speaking audio via Google text-to-speech API
